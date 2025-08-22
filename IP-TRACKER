@@ -1,0 +1,100 @@
+#!/bin/bash
+# Colors
+red="\033[31;1m"
+green="\033[32;1m"
+yellow="\033[33;1m"
+blue="\033[34;1m"
+purple="\033[35;1m"
+cyan="\033[36;1m"
+white="\033[37;1m"
+reset="\033[0m"
+
+# Temp file
+TMP_FILE="/tmp/ipinfo.yaml"
+
+# Banner
+banner() {
+    clear
+    echo -e "${cyan}"
+    cat << "EOF"
+@@@  @@@@@@@              @@@@@@@  @@@@@@@    @@@@@@    @@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@   
+@@@  @@@@@@@@             @@@@@@@  @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@@  
+@@!  @@!  @@@               @@!    @@!  @@@  @@!  @@@  !@@       @@!  !@@  @@!       @@!  @@@  
+!@!  !@!  @!@               !@!    !@!  @!@  !@!  @!@  !@!       !@!  @!!  !@!       !@!  @!@  
+!!@  @!@@!@!   @!@!@!@!@    @!!    @!@!!@!   @!@!@!@!  !@!       @!@@!@!   @!!!:!    @!@!!@!   
+!!!  !!@!!!    !!!@!@!!!    !!!    !!@!@!    !!!@!!!!  !!!       !!@!!!    !!!!!:    !!@!@!    
+!!:  !!:                    !!:    !!: :!!   !!:  !!!  :!!       !!: :!!   !!:       !!: :!!   
+:!:  :!:                    :!:    :!:  !:!  :!:  !:!  :!:       :!:  !:!  :!:       :!:  !:!  
+ ::   ::                     ::    ::   :::  ::   :::   ::: :::   ::  :::   :: ::::  ::   :::  
+:     :                      :      :   : :   :   : :   :: :: :   :   :::  : :: ::    :   : :  
+EOF
+    echo -e "${reset}"
+}
+
+Myip() {
+    read -p "Press ENTER to continue..." enter
+    wget -q https://ipapi.co/yaml/ -O "$TMP_FILE"
+    if [ -s "$TMP_FILE" ]; then
+        echo -e "${yellow}[${red}+${yellow}]${white} Your IP Info ${green}>>>>>>>>"
+        echo -e "${green}"
+        cat "$TMP_FILE"
+        echo -e "${reset}"
+    else
+        echo -e "${red}[!] Failed to fetch IP info.${reset}"
+    fi
+    rm -f "$TMP_FILE"
+    menuoption
+}
+
+iptarget() {
+    echo -e "${yellow}Input IP Address [ex : 8.8.8.8] "
+    echo -e "${white}╭─${green}localhost${cyan} ~/TERMUX${white}"
+    read -p " ╰─$ " target
+
+    wget -q "https://ipapi.co/$target/yaml/" -O "$TMP_FILE"
+    if [ -s "$TMP_FILE" ]; then
+        echo -e "${yellow}[${red}+${yellow}]${white} IP Target Info ${green}>>>>>>>>"
+        echo -e "${green}"
+        cat "$TMP_FILE"
+        echo -e "${reset}"
+    else
+        echo -e "${red}[!] Failed to fetch info for target IP.${reset}"
+    fi
+    rm -f "$TMP_FILE"
+    menuoption
+}
+
+about() {
+    sleep 0.15
+    echo -e $red'''
+    Maintain by   : \033[35;1mARSHAN AHMED ERFAN\033[34;1m
+    Version       : \033[32;1m1.0\033[34;1m
+    Date          : \033[32;1mAug 2025\033[34;1m
+    Github        : \033[36;1mhttps://github.com/ZERO-WAVE-0\033[34;1m
+    YouTube       : \033[36;1mhttps://youtube.com/@bdnoobhacker\033[34;1m
+    Facebook      : \033[36;1mhttps://facebook.com/@bdnoobhacker\033[34;1m
+    Telegram      : \033[36;1mt.me/bdnoobhacker
+'''$white
+    menuoption
+}
+
+menuoption() {
+    echo -e $red"        ~"$yellow"{"$green"1"$yellow"}"$purple"--"$white"My IP"
+    echo -e $red"        ~"$yellow"{"$green"2"$yellow"}"$purple"--"$white"Track IP Target"
+    echo -e $red"        ~"$yellow"{"$green"3"$yellow"}"$purple"--"$white"About Me"
+    echo -e $red"        ~"$yellow"{"$green"4"$yellow"}"$purple"--"$white"Quit"
+    echo -e $white "╭─"$green"localhost"$cyan" ~/TERMUX"$white
+    read -p " ╰─$ " get
+
+    case $get in
+        1) Myip ;;
+        2) iptarget ;;
+        3) about ;;
+        4) echo "Bye bye :)"; exit ;;
+        *) echo -e "${red}Invalid option!${reset}"; sleep 1; menuoption ;;
+    esac
+}
+
+# Start
+banner
+menuoption
